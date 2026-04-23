@@ -248,21 +248,27 @@ export default function ExperiencePage() {
           icon={Users}
         />
 
-        {/* CTA */}
-        <div className="mt-20 p-10 bg-gradient-to-br from-light-surface to-light-bg dark:from-navy-800 dark:to-navy-900 rounded-3xl border border-light-border dark:border-navy-700 text-center shadow-lg">
-          <Award className="mx-auto text-accent mb-4" size={32} />
-          <h3 className="text-xl font-bold text-text-main dark:text-text-darkMain mb-2">
+        {/* CTA SECTION: DOWNLOAD CV */}
+        <div className="mt-20 p-10 bg-gradient-to-br from-light-surface to-light-bg dark:from-navy-800 dark:to-navy-900 rounded-[2rem] border border-light-border dark:border-navy-700 text-center shadow-lg transition-all duration-300 hover:shadow-xl">
+          <Award className="mx-auto text-accent mb-6" size={40} />
+          <h3 className="text-2xl font-black text-text-main dark:text-text-darkMain mb-3 tracking-tighter">
             {lang === "EN"
-              ? "Certifications & Full Details"
-              : "Sertifikasi & Detail Lengkap"}
+              ? "Ready for a deeper dive?"
+              : "Siap untuk melihat lebih detail?"}
           </h3>
-          <p className="text-sm text-text-muted dark:text-text-darkMuted mb-8 max-w-md mx-auto">
+          <p className="text-sm text-text-muted dark:text-text-darkMuted mb-8 max-w-sm mx-auto leading-relaxed">
             {lang === "EN"
-              ? "Interested in my seminar certificates, course completions, or a printable format of my resume?"
-              : "Tertarik melihat sertifikat seminar, penyelesaian kursus, atau format CV cetak saya?"}
+              ? "Download my full resume for a comprehensive view of my certifications, projects, and detailed skill sets in a printable format."
+              : "Unduh CV lengkap saya untuk melihat sertifikasi, detail proyek, dan daftar keterampilan mendalam dalam format yang siap cetak."}
           </p>
-          <a href="/cv-dimas.pdf" target="_blank" rel="noopener noreferrer">
-            <button className="px-8 py-4 bg-text-main dark:bg-white text-white dark:text-navy-900 font-black text-[10px] tracking-widest uppercase rounded-full hover:scale-105 hover:shadow-xl transition-all duration-300">
+
+          <a
+            href="/cv-dimas.pdf"
+            download="CV_Dimas_Rizki_Prasetyo.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button className="px-8 py-4 bg-accent text-white font-black text-xs tracking-widest uppercase rounded-full hover:bg-accent/90 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg shadow-accent/20">
               {lang === "EN" ? "Download Full Resume" : "Unduh CV Lengkap"}
             </button>
           </a>

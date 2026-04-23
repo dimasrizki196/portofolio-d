@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import LanguageToggle from "@/components/ui/LanguageToggle";
 import { Mail, Briefcase, Settings2, ChevronDown } from "lucide-react";
+import Image from "next/image";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,13 +45,19 @@ export default function Navbar() {
     >
       <div className="flex justify-between items-center px-4 sm:px-6 h-16">
         {/* LOGO */}
-        <Link
-          href="/"
-          className="text-xl sm:text-2xl font-bold tracking-tighter text-text-main dark:text-text-darkMain"
-        >
-          dr<span className="text-accent">.dev</span>
+        <Link href="/" className="flex items-center gap-2">
+          <div className="relative w-12 h-12">
+            <Image
+              src="/images/logo-light.png"
+              alt="Dimas.dev Logo"
+              fill
+              className="object-contain"
+            />
+          </div>
+          <span className="text-xl sm:text-2xl font-black tracking-tighter text-navy-900 dark:text-white">
+            dr<span className="text-accent">.dev</span>
+          </span>
         </Link>
-
         {/* NAV MENU (Desktop) */}
         <nav className="hidden lg:flex items-center space-x-1">
           {navLinks.map((link) => {
