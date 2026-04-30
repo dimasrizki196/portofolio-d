@@ -1,11 +1,12 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import {
   Code2,
   Server,
   Layers,
-  Globe, // Icon baru untuk web profil
+  Globe,
   ArrowRight,
   CheckCircle2,
   Sparkles,
@@ -13,7 +14,7 @@ import {
   Zap,
 } from "lucide-react";
 
-// DATA SERVICES (4 Pilar Keahlian)
+// DATA SERVICES
 const services = [
   {
     id: 1,
@@ -75,131 +76,174 @@ const services = [
   },
 ];
 
+// --- HOOK UNTUK SCROLL ANIMATION ---
+function useScrollReveal(threshold = 0.1) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold },
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, isVisible };
+}
+
 export default function ServicesPage() {
   const { lang } = useLanguage();
+  const [isPageReady, setIsPageReady] = useState(false); // State untuk sinkronisasi loading
+  const { ref: gridRef, isVisible: isGridVisible } = useScrollReveal(0.05);
+  const { ref: pricingRef, isVisible: isPricingVisible } = useScrollReveal(0.1);
+
+  useEffect(() => {
+    // Menunggu 1.6 detik (durasi loading logo + sedikit jeda memudar)
+    // baru memicu animasi konten halaman
+    const timer = setTimeout(() => {
+      setIsPageReady(true);
+    }, 1600);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    // MAIN CONTAINER
-    <main className="min-h-screen pt-32 pb-20 bg-light-bg dark:bg-navy-900 px-6 transition-colors duration-300">
-      <div className="max-w-6xl mx-auto overflow-hidden">
+    <main className="min-h-screen pt-28 sm:pt-32 pb-16 sm:pb-20 bg-light-bg dark:bg-navy-900 px-4 sm:px-6 transition-colors duration-300 overflow-hidden">
+      <div className="max-w-6xl mx-auto">
         {/* =========================================
-           1. HEADER SECTION
+           1. HEADER SECTION (Hanya muncul jika isPageReady true)
            ========================================= */}
-        <header className="mb-20 md:mb-24 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-[10px] font-black uppercase tracking-[0.2em] mb-6">
+        <header className="mb-16 md:mb-24 relative z-10 text-center md:text-left">
+          {/* Badge */}
+          <div
+            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-[10px] font-black uppercase tracking-[0.2em] mb-4 sm:mb-6 transition-all duration-700 ease-out ${
+              isPageReady
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-8"
+            }`}
+          >
             <Zap size={12} />
             {lang === "EN" ? "Technical Solutions" : "Solusi Teknis"}
           </div>
-          <h1 className="text-5xl md:text-7xl font-black text-text-main dark:text-text-darkMain tracking-tighter mb-6 leading-[0.95]">
-            {lang === "EN" ? "Expert Services." : "Layanan Ahli."} <br />
+
+          {/* Title */}
+          <h1
+            className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-text-main dark:text-text-darkMain tracking-tighter mb-4 sm:mb-6 leading-[1] md:leading-[0.95] transition-all duration-700 ease-out ${
+              isPageReady
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-10"
+            }`}
+            style={{ transitionDelay: "150ms" }}
+          >
+            {lang === "EN" ? "Expert Services." : "Layanan Ahli."}{" "}
+            <br className="hidden sm:block" />
             <span className="text-accent">Built to Scale.</span>
           </h1>
-          <p className="max-w-xl text-lg text-text-muted dark:text-text-darkMuted leading-relaxed">
+
+          {/* Description */}
+          <p
+            className={`max-w-xl mx-auto md:mx-0 text-base sm:text-lg text-text-muted dark:text-text-darkMuted leading-relaxed transition-all duration-700 ease-out ${
+              isPageReady
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: "300ms" }}
+          >
             {lang === "EN"
-              ? "Helping organizations and individuals build fast, secure, and intuitive digital ecosystems, from company profiles to complex management systems."
-              : "Membantu organisasi dan individu membangun ekosistem digital yang cepat, aman, dan intuitif, dari profil perusahaan hingga sistem manajemen yang kompleks."}
+              ? "Helping organizations and individuals build fast, secure, and intuitive digital ecosystems."
+              : "Membantu organisasi dan individu membangun ekosistem digital yang cepat, aman, dan intuitif."}
           </p>
         </header>
 
         {/* =========================================
-           2. SERVICES GRID SECTION (Sekarang 2 Kolom untuk 4 Item)
+           2. SERVICES GRID SECTION (Triggered by Scroll)
            ========================================= */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-32 relative z-10">
-          {services.map((service) => (
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-24 md:mb-32 relative z-10"
+        >
+          {services.map((service, index) => (
             <div
               key={service.id}
-              className="group p-8 bg-white dark:bg-navy-800 border border-light-border dark:border-navy-700 rounded-[2.5rem] hover:border-accent/50 transition-all duration-500 shadow-sm hover:shadow-xl hover:shadow-accent/5 flex flex-col"
+              className={`group p-6 sm:p-8 bg-white dark:bg-navy-800 border border-light-border dark:border-navy-700 rounded-3xl sm:rounded-[2.5rem] hover:border-accent/50 transition-all duration-700 shadow-sm hover:shadow-xl hover:shadow-accent/5 flex flex-col ease-out ${
+                isGridVisible && isPageReady
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-16"
+              }`}
+              style={{ transitionDelay: `${index * 150}ms` }}
             >
-              {/* Icon */}
               <div
-                className={`w-14 h-14 rounded-xl bg-light-bg dark:bg-navy-900 flex items-center justify-center ${service.color} mb-8 border border-light-border dark:border-navy-700 group-hover:scale-110 transition-transform`}
+                className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-light-bg dark:bg-navy-900 flex items-center justify-center ${service.color} mb-6 sm:mb-8 border border-light-border dark:border-navy-700 group-hover:scale-110 transition-transform`}
               >
                 {service.icon}
               </div>
-
-              {/* Judul & Deskripsi */}
-              <h2 className="text-xl font-black text-text-main dark:text-text-darkMain mb-4 uppercase tracking-tight">
+              <h2 className="text-lg sm:text-xl font-black text-text-main dark:text-text-darkMain mb-3 sm:mb-4 uppercase tracking-tight">
                 {lang === "EN" ? service.title.EN : service.title.ID}
               </h2>
-              <p className="text-sm text-text-muted dark:text-text-darkMuted leading-relaxed mb-8 flex-grow">
+              <p className="text-xs sm:text-sm text-text-muted dark:text-text-darkMuted leading-relaxed mb-6 sm:mb-8 flex-grow">
                 {lang === "EN" ? service.desc.EN : service.desc.ID}
               </p>
-
-              {/* Feature List */}
-              <div className="space-y-3 mb-10 border-t border-light-border dark:border-navy-700 pt-6">
+              <div className="space-y-2 sm:space-y-3 mb-8 sm:mb-10 border-t border-light-border dark:border-navy-700 pt-5 sm:pt-6">
                 {service.features.map((feat) => (
                   <div
                     key={feat}
-                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-text-main/70 dark:text-text-darkMain/70"
+                    className="flex items-center gap-2 text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-text-main/70 dark:text-text-darkMain/70"
                   >
-                    <CheckCircle2 size={14} className="text-accent" />
+                    <CheckCircle2 size={12} className="text-accent" />
                     {feat}
                   </div>
                 ))}
               </div>
-
-              {/* Link ke email */}
               <a
                 href={`mailto:dimasrizki2004@gmail.com?subject=Interest in ${lang === "EN" ? service.title.EN : service.title.ID}`}
-                className="inline-flex items-center gap-2 text-xs font-black text-accent uppercase tracking-widest group-hover:gap-4 transition-all mt-auto"
+                className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-black text-accent uppercase tracking-widest group-hover:gap-4 transition-all mt-auto w-fit"
               >
                 {lang === "EN" ? "Inquire Now" : "Tanya Sekarang"}
-                <ArrowRight size={16} />
+                <ArrowRight size={14} />
               </a>
             </div>
           ))}
         </div>
 
         {/* =========================================
-           3. PRICING STRATEGY SECTION
+           3. PRICING SECTION
            ========================================= */}
-        <div className="relative z-10 bg-white dark:bg-navy-800 p-10 md:p-16 rounded-[3rem] border border-light-border dark:border-navy-700 shadow-xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* Teks Penjelasan */}
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+        <div
+          ref={pricingRef}
+          className={`relative z-10 bg-white dark:bg-navy-800 p-8 sm:p-10 md:p-16 rounded-3xl sm:rounded-[3rem] border border-light-border dark:border-navy-700 shadow-xl transition-all duration-1000 ease-out ${
+            isPricingVisible && isPageReady
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-20"
+          }`}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] mb-4">
                 <Sparkles size={12} />
                 {lang === "EN" ? "Pricing Strategy" : "Strategi Harga"}
               </div>
-              <h3 className="text-4xl font-black text-text-main dark:text-text-darkMain tracking-tighter mb-4 leading-tight">
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-main dark:text-text-darkMain tracking-tighter mb-4 leading-tight">
                 {lang === "EN" ? "Investment Plans." : "Rencana Investasi."}
               </h3>
-              <p className="text-sm text-text-muted dark:text-text-darkMuted leading-relaxed max-w-md">
+              <p className="text-xs sm:text-sm text-text-muted dark:text-text-darkMuted leading-relaxed max-w-md mx-auto lg:mx-0">
                 {lang === "EN"
-                  ? "I offer flexible pricing models based on the complexity of your requirements. From simple landing pages to complex management systems, we can scale it to fit your needs."
-                  : "Saya menawarkan model harga yang fleksibel berdasarkan kompleksitas kebutuhan Anda. Dari landing page sederhana hingga sistem manajemen yang rumit, kita dapat menyesuaikannya."}
+                  ? "Flexible pricing based on project complexity."
+                  : "Harga fleksibel sesuai kompleksitas proyek."}
               </p>
             </div>
 
-            {/* Kotak Harga Mulai Dari */}
-            <div className="p-10 bg-light-bg dark:bg-navy-900 rounded-3xl border border-light-border dark:border-navy-700 shadow-inner group flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <Briefcase size={32} className="text-accent opacity-60" />
-                  <span className="text-[10px] font-black uppercase text-accent tracking-widest">
-                    Freelance / Project-Based
-                  </span>
-                </div>
-
-                {/* BAGIAN HARGA YANG SUDAH DIPERBAIKI */}
-                <div className="text-4xl md:text-5xl font-black text-text-main dark:text-text-darkMain mb-6 leading-none">
-                  <span className="text-lg font-medium opacity-60">
-                    {lang === "EN" ? "Starts from" : "Mulai dari"}
-                  </span>{" "}
-                  <br />
-                  {lang === "EN" ? "IDR 1.5 Million" : "Rp 1,5 Juta"}
-                  <span className="text-sm opacity-50 font-medium tracking-normal">
-                    {" "}
-                    / project
-                  </span>
-                </div>
-
-                <p className="text-xs text-text-muted mb-8 italic">
-                  *{" "}
-                  {lang === "EN"
-                    ? "Prices are estimates and vary based on project scope, pages, and system complexity."
-                    : "Harga adalah estimasi dan bervariasi tergantung lingkup proyek, jumlah halaman, dan kompleksitas sistem."}
-                </p>
+            <div className="p-8 sm:p-10 bg-light-bg dark:bg-navy-900 rounded-3xl border border-light-border dark:border-navy-700 shadow-inner flex flex-col justify-between">
+              <div className="text-3xl sm:text-4xl md:text-5xl font-black text-text-main dark:text-text-darkMain mb-6">
+                <span className="text-base sm:text-lg font-medium opacity-60 block mb-2">
+                  {lang === "EN" ? "Starts from" : "Mulai dari"}
+                </span>
+                {lang === "EN" ? "IDR 1.5 Million" : "Rp 1,5 Juta"}
               </div>
               <a
                 href="mailto:dimasrizki2004@gmail.com?subject=Project Quote Inquiry"

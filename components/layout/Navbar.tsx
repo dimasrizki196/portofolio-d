@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import LanguageToggle from "@/components/ui/LanguageToggle";
-import { Mail, Briefcase, Settings2, ChevronDown } from "lucide-react";
+import { Briefcase, Settings2, Menu, X } from "lucide-react";
 import Image from "next/image";
 
 export default function Navbar() {
@@ -39,14 +39,14 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-6 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-6xl z-50 bg-light-surface/80 dark:bg-navy-800/80 backdrop-blur-md border border-light-border dark:border-navy-700 shadow-lg transition-all duration-300 ${
+      className={`fixed top-4 sm:top-6 left-1/2 w-[calc(100%-24px)] sm:w-[calc(100%-48px)] max-w-6xl z-50 bg-light-surface/80 dark:bg-navy-800/80 backdrop-blur-md border border-light-border dark:border-navy-700 shadow-lg transition-all duration-300 animate-nav-enter ${
         isOpen ? "rounded-3xl" : "rounded-full"
       }`}
     >
-      <div className="flex justify-between items-center px-4 sm:px-6 h-16">
+      <div className="flex justify-between items-center px-4 sm:px-6 h-16 sm:h-18">
         {/* LOGO */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="relative w-12 h-12">
+        <Link href="/" className="flex items-center gap-2 shrink-0">
+          <div className="relative w-10 h-10 sm:w-12 sm:h-12">
             <Image
               src="/images/logo-light.png"
               alt="Dimas.dev Logo"
@@ -54,11 +54,12 @@ export default function Navbar() {
               className="object-contain"
             />
           </div>
-          <span className="text-xl sm:text-2xl font-black tracking-tighter text-navy-900 dark:text-white">
+          <span className="text-lg sm:text-2xl font-black tracking-tighter text-navy-900 dark:text-white">
             dr<span className="text-accent">.dev</span>
           </span>
         </Link>
-        {/* NAV MENU (Desktop) */}
+
+        {/* NAV MENU (Desktop & Large Tablet) */}
         <nav className="hidden lg:flex items-center space-x-1">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -69,7 +70,7 @@ export default function Navbar() {
                 className={`text-[12px] font-bold uppercase tracking-wider px-4 py-2 rounded-full transition-all ${
                   isActive
                     ? "bg-accent text-white shadow-md"
-                    : "text-text-muted dark:text-text-darkMuted hover:text-accent"
+                    : "text-text-muted dark:text-text-darkMuted hover:text-accent hover:bg-accent/5"
                 }`}
               >
                 {link.name}
@@ -79,8 +80,8 @@ export default function Navbar() {
         </nav>
 
         {/* ACTIONS AREA */}
-        <div className="flex items-center space-x-3">
-          {/* SETTINGS DROPDOWN (Language & Theme) */}
+        <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+          {/* SETTINGS DROPDOWN (Language & Theme) - Hidden on very small mobile */}
           <div className="relative hidden sm:block" ref={settingsRef}>
             <button
               onClick={() => setShowSettings(!showSettings)}
@@ -113,50 +114,59 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* HIRE ME BUTTON (Hero CTA) */}
+          {/* HIRE ME BUTTON (Responsive sizing) */}
           <Link
             href="mailto:hello@dimas.dev"
-            className="flex items-center gap-2 px-6 py-2.5 bg-text-main dark:bg-white text-white dark:text-navy-900 text-[10px] font-black tracking-[0.2em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg"
+            className="flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-2.5 bg-text-main dark:bg-white text-white dark:text-navy-900 text-[10px] font-black tracking-[0.2em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg"
           >
             <Briefcase size={14} className="hidden sm:block" />
             HIRE ME
           </Link>
 
-          {/* MOBILE HAMBURGER */}
+          {/* MOBILE HAMBURGER TOGGLE */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-text-main dark:text-text-darkMain focus:outline-none"
+            className="lg:hidden p-2 text-text-main dark:text-text-darkMain focus:outline-none transition-transform"
+            aria-label="Toggle menu"
           >
             {isOpen ? (
-              <Settings2 className="rotate-90 transition-transform" />
+              <X size={24} className="animate-in spin-in-90 duration-200" />
             ) : (
-              <Settings2 />
+              <Menu size={24} className="animate-in fade-in duration-200" />
             )}
           </button>
         </div>
       </div>
 
-      {/* MOBILE MENU */}
+      {/* MOBILE MENU CONTENT */}
       <div
-        className={`lg:hidden overflow-hidden transition-all duration-300 ${
+        className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
           isOpen
-            ? "max-h-[500px] opacity-100 pb-8 pt-2 px-6"
+            ? "max-h-[600px] opacity-100 pb-6 pt-2 px-6"
             : "max-h-0 opacity-0"
         }`}
       >
-        <div className="flex flex-col gap-1 border-t border-light-border dark:border-navy-700 pt-4">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              onClick={() => setIsOpen(false)}
-              className="py-3 text-lg font-black uppercase tracking-tighter text-text-main dark:text-text-darkMain hover:text-accent"
-            >
-              {link.name}
-            </Link>
-          ))}
+        <div className="flex flex-col gap-2 border-t border-light-border dark:border-navy-700 pt-4">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className={`py-3 px-4 rounded-xl text-base sm:text-lg font-black uppercase tracking-tighter transition-colors ${
+                  isActive
+                    ? "bg-accent/10 text-accent"
+                    : "text-text-main dark:text-text-darkMain hover:text-accent hover:bg-light-bg dark:hover:bg-navy-900"
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
 
-          <div className="mt-6 flex items-center justify-between p-4 bg-light-bg dark:bg-navy-900 rounded-2xl">
+          {/* Mobile Settings Area */}
+          <div className="mt-4 sm:hidden flex items-center justify-between p-4 bg-light-bg dark:bg-navy-900 rounded-2xl border border-light-border/50 dark:border-navy-700/50">
             <div className="flex gap-4">
               <ThemeToggle />
               <LanguageToggle />

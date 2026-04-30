@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import {
   GraduationCap,
@@ -12,6 +12,28 @@ import {
   Layout,
   BookOpen,
 } from "lucide-react";
+
+// --- HOOK UNTUK SCROLL ANIMATION ---
+function useScrollReveal() {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, isVisible };
+}
 
 // --- DATA: EXPERIENCE (KOLOM KIRI - 3 Proyek) ---
 const experienceDataLeft = [
@@ -29,10 +51,7 @@ const experienceDataLeft = [
   {
     id: 2,
     year: "Nov 2025 - Feb 2026",
-    title: {
-      EN: "Informatics Thesis Project",
-      ID: "Proyek Skripsi Informatika",
-    },
+    title: { EN: "Informatics Thesis Project", ID: "Proyek Skripsi Informatika" },
     subtitle: "Sistem SPP TK Bina Pratama",
     desc: {
       EN: "Built a comprehensive digital communication and tuition fee management system for kindergarten.",
@@ -69,10 +88,7 @@ const experienceDataRight = [
   {
     id: 5,
     year: "Aug 2025 - Present",
-    title: {
-      EN: "Software Engineer",
-      ID: "Software Engineer",
-    },
+    title: { EN: "Software Engineer", ID: "Software Engineer" },
     subtitle: "AnglePhysio",
     desc: {
       EN: "Developing a health-tech web platform designed for comprehensive posture analysis and physiotherapy assessments.",
@@ -134,9 +150,90 @@ const organizationData = [
   },
 ];
 
+// --- KOMPONEN HELPER TIMELINE ---
+const TimelineList = ({ data, startDelay = 0, isSectionVisible, lang }: { data: any[]; startDelay?: number; isSectionVisible: boolean; lang: "EN" | "ID" }) => {
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    if (isSectionVisible) {
+      const timer = setTimeout(() => setAnimate(true), 50);
+      return () => clearTimeout(timer);
+    } else {
+      setAnimate(false);
+    }
+  }, [isSectionVisible]);
+
+  return (
+    <div className="relative mt-6">
+      {/* Garis Vertikal Latar */}
+      <div className="absolute left-[19px] sm:left-[19px] md:left-[39px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-accent/50 via-cyan-400/30 to-purple-500/10"></div>
+
+      <div className="space-y-8 sm:space-y-10">
+        {data.map((item, index) => {
+          const IconComponent = item.icon;
+          const baseDelay = startDelay + index * 150;
+
+          return (
+            <div
+              key={item.id}
+              className={`relative pl-14 sm:pl-16 md:pl-24 group transition-all duration-700 ease-out ${
+                animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+              }`}
+              style={{ transitionDelay: `${baseDelay}ms` }}
+            >
+              {/* Lingkaran Ikon */}
+              <div className="absolute left-0 sm:left-0 md:left-5 top-1 w-10 h-10 rounded-full bg-light-bg dark:bg-navy-900 border-2 border-accent flex items-center justify-center shadow-[0_0_15px_rgba(37,99,235,0.2)] group-hover:shadow-[0_0_25px_rgba(37,99,235,0.6)] group-hover:scale-110 transition-all duration-300 z-10 shrink-0">
+                <IconComponent size={18} className="text-accent" />
+              </div>
+
+              {/* Kartu Konten */}
+              <div className="bg-light-surface/40 dark:bg-navy-800/40 backdrop-blur-md border border-light-border dark:border-navy-700 p-5 sm:p-6 md:p-8 rounded-2xl shadow-lg hover:border-accent/40 transition-colors duration-300 overflow-hidden">
+                <div 
+                  className={`inline-block px-3 py-1 mb-3 rounded-md bg-accent/10 text-accent text-[10px] font-bold tracking-wider uppercase transition-all duration-700 ease-out ${
+                    animate ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
+                  }`}
+                  style={{ transitionDelay: `${baseDelay + 150}ms` }}
+                >
+                  {item.year}
+                </div>
+                <h4 
+                  className={`text-lg sm:text-xl font-bold text-text-main dark:text-text-darkMain mb-1 transition-all duration-700 ease-out ${
+                    animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                  }`}
+                  style={{ transitionDelay: `${baseDelay + 250}ms` }}
+                >
+                  {item.title[lang]}
+                </h4>
+                <p 
+                  className={`text-xs sm:text-sm font-bold text-text-muted dark:text-text-darkMuted mb-3 sm:mb-4 transition-all duration-700 ease-out ${
+                    animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                  }`}
+                  style={{ transitionDelay: `${baseDelay + 350}ms` }}
+                >
+                  {item.subtitle}
+                </p>
+                <p 
+                  className={`text-xs sm:text-sm text-text-muted dark:text-text-darkMuted leading-relaxed transition-all duration-700 ease-out ${
+                    animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                  }`}
+                  style={{ transitionDelay: `${baseDelay + 450}ms` }}
+                >
+                  {item.desc[lang]}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// --- KOMPONEN UTAMA EXPERIENCE ---
 export default function Experience() {
   const { lang } = useLanguage();
   const [activeTab, setActiveTab] = useState("experience");
+  const { ref: sectionRef, isVisible } = useScrollReveal();
 
   const tabs = [
     {
@@ -151,64 +248,37 @@ export default function Experience() {
     },
   ];
 
-  // Komponen Helper untuk merender list timeline
-  const TimelineList = ({ data }: { data: any[] }) => (
-    <div className="relative mt-6">
-      {/* Garis Vertikal Latar */}
-      <div className="absolute left-[19px] md:left-[39px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-accent/50 via-cyan-400/30 to-purple-500/10"></div>
-
-      <div className="space-y-10">
-        {data.map((item) => {
-          const IconComponent = item.icon;
-          return (
-            <div key={item.id} className="relative pl-16 md:pl-24 group">
-              {/* Lingkaran Ikon */}
-              <div className="absolute left-0 md:left-5 top-1 w-10 h-10 rounded-full bg-light-bg dark:bg-navy-900 border-2 border-accent flex items-center justify-center shadow-[0_0_15px_rgba(37,99,235,0.2)] group-hover:shadow-[0_0_25px_rgba(37,99,235,0.6)] group-hover:scale-110 transition-all duration-300 z-10">
-                <IconComponent size={18} className="text-accent" />
-              </div>
-
-              {/* Kartu Konten */}
-              <div className="bg-light-surface/40 dark:bg-navy-800/40 backdrop-blur-md border border-light-border dark:border-navy-700 p-6 md:p-8 rounded-2xl shadow-lg hover:border-accent/40 transition-colors duration-300">
-                <div className="inline-block px-3 py-1 mb-3 rounded-md bg-accent/10 text-accent text-[10px] font-bold tracking-wider uppercase">
-                  {item.year}
-                </div>
-                <h4 className="text-xl font-bold text-text-main dark:text-text-darkMain mb-1">
-                  {item.title[lang]}
-                </h4>
-                <p className="text-sm font-bold text-text-muted dark:text-text-darkMuted mb-4">
-                  {item.subtitle}
-                </p>
-                <p className="text-sm text-text-muted dark:text-text-darkMuted leading-relaxed">
-                  {item.desc[lang]}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-
   return (
     <section
       id="experience"
-      className="w-full py-24 relative z-10 min-h-[800px]"
+      ref={sectionRef} 
+      className="w-full py-16 sm:py-24 relative z-10 min-h-[800px] overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto px-6">
-        {/* Header */}
-        <div className="mb-12 text-center">
-          <h2 className="text-accent text-xs font-bold tracking-[0.3em] uppercase mb-4 flex items-center justify-center gap-3">
-            <span className="w-8 h-[2px] bg-accent"></span>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        
+        {/* Header Animasi */}
+        <div
+          className={`mb-10 sm:mb-12 text-center transition-all duration-1000 ease-out ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}
+        >
+          <h2 className="text-accent text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase mb-4 flex items-center justify-center gap-3">
+            <span className="w-6 sm:w-8 h-[2px] bg-accent"></span>
             {lang === "EN" ? "Journey" : "Perjalanan"}
-            <span className="w-8 h-[2px] bg-accent"></span>
+            <span className="w-6 sm:w-8 h-[2px] bg-accent"></span>
           </h2>
-          <h3 className="text-4xl md:text-5xl font-black tracking-tight text-text-main dark:text-text-darkMain">
+          <h3 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-text-main dark:text-text-darkMain">
             {lang === "EN" ? "Path & Background." : "Rekam Jejak."}
           </h3>
         </div>
 
-        {/* --- NAVIGATION TABS --- */}
-        <div className="flex flex-wrap justify-center gap-4 mb-16">
+        {/* Navigation Tabs */}
+        <div
+          className={`flex flex-wrap justify-center gap-3 sm:gap-4 mb-12 sm:mb-16 transition-all duration-1000 ease-out ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}
+          style={{ transitionDelay: "200ms" }}
+        >
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -217,13 +287,13 @@ export default function Experience() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all duration-300 ${
+                className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
                   isActive
                     ? "bg-accent text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] scale-105"
                     : "bg-light-surface/50 dark:bg-navy-800/50 text-text-muted hover:text-text-main dark:hover:text-text-darkMain hover:bg-light-border dark:hover:bg-navy-700"
                 }`}
               >
-                <Icon size={18} />
+                <Icon size={16} className="sm:w-[18px] sm:h-[18px]" />
                 {tab.label[lang]}
               </button>
             );
@@ -231,34 +301,47 @@ export default function Experience() {
         </div>
 
         {/* --- TIMELINE CONTENT --- */}
-        <div className="relative animate-fade-in-up" key={activeTab}>
-          {/* JIKA TAB EXPERIENCE AKTIF (Tampilkan 2 Kolom Langsung) */}
+        <div className="relative" key={activeTab}>
+          {/* JIKA TAB EXPERIENCE AKTIF */}
           {activeTab === "experience" && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
-              <TimelineList data={experienceDataLeft} />
-              <TimelineList data={experienceDataRight} />
-            </div>
+            <>
+              {/* === TAMPILAN MOBILE: Semua data digabung jadi 1 List agar garis nyambung === */}
+              <div className="block lg:hidden">
+                <TimelineList 
+                  data={[...experienceDataLeft, ...experienceDataRight]} 
+                  startDelay={100} 
+                  isSectionVisible={isVisible} 
+                  lang={lang} 
+                />
+              </div>
+
+              {/* === TAMPILAN DESKTOP: Dipisah jadi 2 Kolom === */}
+              <div className="hidden lg:grid grid-cols-2 gap-16">
+                <TimelineList data={experienceDataLeft} startDelay={100} isSectionVisible={isVisible} lang={lang} />
+                <TimelineList data={experienceDataRight} startDelay={250} isSectionVisible={isVisible} lang={lang} />
+              </div>
+            </>
           )}
 
-          {/* JIKA TAB EDU-ORG AKTIF (Tampilkan 2 Kolom dengan Judul Terpisah) */}
+          {/* JIKA TAB EDU-ORG AKTIF */}
           {activeTab === "edu-org" && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-16">
               {/* Kolom Kiri: Education */}
               <div>
-                <h4 className="text-2xl font-black text-text-main dark:text-text-darkMain flex items-center gap-3 border-b border-light-border dark:border-navy-700 pb-4 mb-4">
-                  <GraduationCap className="text-accent" />
+                <h4 className="text-xl sm:text-2xl font-black text-text-main dark:text-text-darkMain flex items-center gap-3 border-b border-light-border dark:border-navy-700 pb-3 sm:pb-4 mb-4">
+                  <GraduationCap className="text-accent w-5 h-5 sm:w-6 sm:h-6" />
                   {lang === "EN" ? "Education" : "Pendidikan Akademik"}
                 </h4>
-                <TimelineList data={educationData} />
+                <TimelineList data={educationData} startDelay={100} isSectionVisible={isVisible} lang={lang} />
               </div>
 
               {/* Kolom Kanan: Organization */}
               <div>
-                <h4 className="text-2xl font-black text-text-main dark:text-text-darkMain flex items-center gap-3 border-b border-light-border dark:border-navy-700 pb-4 mb-4">
-                  <Users className="text-accent" />
+                <h4 className="text-xl sm:text-2xl font-black text-text-main dark:text-text-darkMain flex items-center gap-3 border-b border-light-border dark:border-navy-700 pb-3 sm:pb-4 mb-4">
+                  <Users className="text-accent w-5 h-5 sm:w-6 sm:h-6" />
                   {lang === "EN" ? "Organization" : "Organisasi & UKM"}
                 </h4>
-                <TimelineList data={organizationData} />
+                <TimelineList data={organizationData} startDelay={250} isSectionVisible={isVisible} lang={lang} />
               </div>
             </div>
           )}

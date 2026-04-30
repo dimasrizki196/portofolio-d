@@ -5,11 +5,11 @@ import Contact from "@/components/sections/Contact";
 
 export default function Home() {
   return (
-    <div className="w-full">
+    <main className="w-full overflow-hidden">
       <Hero />
       <Experience />
       <TechStack />
       <Contact />
-    </div>
+    </main>
   );
 }

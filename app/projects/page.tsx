@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { ExternalLink, Github, FolderGit2, Terminal } from "lucide-react";
 import Image from "next/image";
@@ -47,8 +48,8 @@ const projectsData = [
     isPublic: false,
     tech: ["Laravel", "MySQL", "Backend Dev"],
     desc: {
-      EN: "Backend development using Laravel to transform a GUI-based mail administration system into a modern web application for the Protocol, Communication, and Executive Administration of Surakarta.",
-      ID: "Pengembangan backend Laravel untuk mentransformasi sistem administrasi persuratan GUI menjadi website di Protokol, Komunikasi, dan Administrasi Pimpinan Kota Surakarta.",
+      EN: "Backend development using Laravel to transform a GUI-based mail administration system into a modern web application.",
+      ID: "Pengembangan backend Laravel untuk mentransformasi sistem administrasi persuratan GUI menjadi website.",
     },
     image: "/images/diskominfo.png",
     links: { github: "#", live: "" },
@@ -67,125 +68,152 @@ const projectsData = [
   },
 ];
 
+function useScrollReveal(threshold = 0.1) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true);
+      },
+      { threshold },
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [threshold]);
+  return { ref, isVisible };
+}
+
 export default function ProjectsPage() {
   const { lang } = useLanguage();
+  const [isPageReady, setIsPageReady] = useState(false);
+  const { ref: gridRef, isVisible: isGridVisible } = useScrollReveal(0.05);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsPageReady(true), 1600);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <main className="min-h-screen pt-32 pb-20 bg-light-bg dark:bg-navy-900 px-6 transition-colors duration-300">
+    <main className="min-h-screen pt-28 sm:pt-32 pb-16 sm:pb-20 bg-light-bg dark:bg-navy-900 px-4 sm:px-6 transition-colors duration-300 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* HEADER SECTION */}
-        <header className="mb-20">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-[10px] font-black uppercase tracking-[0.2em] mb-6">
+        <header className="mb-16 sm:mb-20">
+          <div
+            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-[10px] font-black uppercase tracking-[0.2em] mb-6 transition-all duration-700 ease-out ${isPageReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          >
             <FolderGit2 size={12} />
             {lang === "EN" ? "Selected Works" : "Karya Terpilih"}
           </div>
-          <h1 className="text-5xl md:text-7xl font-black text-text-main dark:text-text-darkMain tracking-tighter mb-6 leading-[0.95]">
+          <h1
+            className={`text-4xl sm:text-7xl font-black text-text-main dark:text-text-darkMain tracking-tighter mb-6 leading-[1.1] transition-all duration-1000 ease-out ${isPageReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+            style={{ transitionDelay: "150ms" }}
+          >
             {lang === "EN" ? "Featured Projects." : "Proyek Unggulan."}
           </h1>
-          <p className="max-w-xl text-lg text-text-muted dark:text-text-darkMuted leading-relaxed">
+          <p
+            className={`max-w-xl text-base sm:text-lg text-text-muted dark:text-text-darkMuted leading-relaxed transition-all duration-1000 ease-out ${isPageReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            style={{ transitionDelay: "300ms" }}
+          >
             {lang === "EN"
-              ? "A collection of digital products and technical solutions I've built, focusing on clean code, scalable architecture, and intuitive design."
-              : "Koleksi produk digital dan solusi teknis yang telah saya bangun, berfokus pada kode yang bersih, arsitektur skalabel, dan desain intuitif."}
+              ? "Focused on clean code and scalable architecture."
+              : "Berfokus pada kode bersih dan arsitektur skalabel."}
           </p>
         </header>
 
-        {/* PROJECTS GRID (3 Kolom) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* PROJECTS GRID */}
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+        >
           {projectsData.map((project, i) => (
             <div
               key={i}
-              className="group flex flex-col bg-light-surface/40 dark:bg-navy-800/40 backdrop-blur-md border border-light-border dark:border-navy-700 rounded-2xl overflow-hidden hover:border-accent/50 hover:shadow-[0_0_30px_rgba(37,99,235,0.15)] transition-all duration-500"
+              className={`group flex flex-col bg-white dark:bg-navy-800/40 backdrop-blur-md border border-light-border dark:border-navy-700 rounded-2xl overflow-hidden hover:border-accent/50 hover:shadow-[0_0_30px_rgba(37,99,235,0.15)] transition-all duration-700 ease-out ${
+                isGridVisible && isPageReady
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-16"
+              }`}
+              style={{ transitionDelay: `${i * 150}ms` }}
             >
-              {/* BAGIAN ATAS: GAMBAR ATAU IKON */}
-              <div className="relative w-full h-56 md:h-48 lg:h-52 overflow-hidden border-b border-light-border dark:border-navy-700 bg-light-bg dark:bg-navy-900 flex flex-col items-center justify-center">
-                {/* 1. LOGIKA MENAMPILKAN GAMBAR (Jika image tidak kosong) */}
+              {/* IMAGE CONTAINER */}
+              <div className="relative w-full h-52 sm:h-56 overflow-hidden border-b border-light-border dark:border-navy-700 bg-light-bg dark:bg-navy-900 flex flex-col items-center justify-center">
                 {project.image ? (
-                  <>
-                    <div className="absolute inset-0 bg-gradient-to-br from-light-border to-light-surface dark:from-navy-700 dark:to-navy-900 animate-pulse z-0"></div>
-                    <Image
-                      src={project.image}
-                      alt={project.title}
-                      fill
-                      className="object-cover object-top transition-transform duration-700 group-hover:scale-105 z-10"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                      }}
-                    />
-                  </>
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105 z-10"
+                  />
                 ) : (
-                  /* FALLBACK: Jika tidak ada foto, tampilkan ikon Terminal besar di background */
                   <Terminal
                     size={48}
                     className="text-text-muted/30 dark:text-text-darkMuted/30 z-0 group-hover:text-accent/50 transition-colors duration-500"
                   />
                 )}
 
-                {/* 2. LOGIKA OVERLAY & TEKS BERDASARKAN STATUS PUBLIK/INTERNAL */}
-                {project.isPublic ? (
-                  /* OVERLAY PUBLIK: Muncul ikon link saat di-hover (Hanya jika ada gambar) */
-                  project.image && (
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center">
+                {/* OVERLAY: Tetap ada hover di Desktop, tapi di Mobile kita sediakan tombol klik di bawah */}
+                <div
+                  className={`absolute inset-0 z-20 transition-all duration-500 flex items-center justify-center bg-navy-900/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 hidden md:flex`}
+                >
+                  {project.isPublic ? (
+                    <a
+                      href={project.links.live}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 bg-accent text-white rounded-full shadow-xl"
+                    >
+                      <ExternalLink size={20} />
+                    </a>
+                  ) : (
+                    <span className="text-[10px] font-black tracking-widest uppercase text-white">
+                      Internal Project
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* DETAILS */}
+              <div className="p-6 flex flex-col flex-grow">
+                <div className="flex justify-between items-start mb-4">
+                  <span className="text-[9px] font-black text-accent uppercase tracking-widest bg-accent/10 px-2 py-1 rounded">
+                    {project.category}
+                  </span>
+                  <div className="flex gap-3 items-center">
+                    {/* Tombol Eksternal muncul di MOBILE secara permanen jika publik */}
+                    {project.isPublic && project.links.live && (
                       <a
                         href={project.links.live}
                         target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-3 bg-accent text-white rounded-full translate-y-4 group-hover:translate-y-0 transition-transform duration-300 shadow-xl"
-                        title="Visit Live Site"
+                        className="md:hidden text-accent"
                       >
-                        <ExternalLink size={20} />
+                        <ExternalLink size={18} />
                       </a>
-                    </div>
-                  )
-                ) : /* OVERLAY INTERNAL: Menampilkan teks "Internal Project" */
-                project.image ? (
-                  /* Jika ada foto -> Teks "Internal Project" muncul saat di-hover (efek kaca/blur) agar foto bisa dilihat utuh di awal */
-                  <div className="absolute inset-0 bg-navy-900/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 flex flex-col items-center justify-center">
-                    <Terminal
-                      size={24}
-                      className="text-white/80 mb-2 translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
-                    />
-                    <span className="text-xs font-bold text-white tracking-widest uppercase translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                      Internal Project
-                    </span>
-                  </div>
-                ) : (
-                  /* Jika tidak ada foto -> Teks "Internal Project" statis menetap di tengah */
-                  <div className="absolute mt-16 z-20">
-                    <span className="text-xs font-bold text-text-muted tracking-widest uppercase">
-                      Internal Project
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* BAGIAN BAWAH: TEKS DAN DETAIL */}
-              <div className="p-6 flex flex-col flex-grow justify-between">
-                <div>
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="text-[10px] font-bold text-accent uppercase tracking-widest bg-accent/10 px-2 py-1 rounded-md">
-                      {project.category}
-                    </span>
+                    )}
                     <a
                       href={project.links.github}
+                      target="_blank"
                       className="text-text-muted hover:text-accent transition-colors"
                     >
                       <Github size={18} />
                     </a>
                   </div>
-                  <h4 className="text-xl font-bold text-text-main dark:text-text-darkMain mb-3 group-hover:text-accent transition-colors">
-                    {project.title}
-                  </h4>
-                  <p className="text-sm text-text-muted dark:text-text-darkMuted leading-relaxed line-clamp-3">
-                    {project.desc[lang]}
-                  </p>
                 </div>
 
-                <div className="mt-6 pt-5 border-t border-light-border dark:border-navy-700">
+                <h4 className="text-xl font-bold text-text-main dark:text-text-darkMain mb-3 group-hover:text-accent transition-colors">
+                  {project.title}
+                </h4>
+                <p className="text-sm text-text-muted dark:text-text-darkMuted leading-relaxed line-clamp-3 mb-6">
+                  {project.desc[lang]}
+                </p>
+
+                {/* TECH STACK */}
+                <div className="mt-auto pt-5 border-t border-light-border dark:border-navy-700">
                   <div className="flex flex-wrap gap-2">
                     {project.tech.map((t) => (
                       <span
                         key={t}
-                        className="text-[10px] font-bold px-2 py-1 bg-light-bg dark:bg-navy-900 text-text-muted border border-light-border dark:border-navy-700 rounded uppercase"
+                        className="text-[9px] font-bold px-2 py-1 bg-light-bg dark:bg-navy-900 text-text-muted border border-light-border dark:border-navy-700 rounded uppercase tracking-tighter"
                       >
                         {t}
                       </span>

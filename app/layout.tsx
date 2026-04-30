@@ -6,6 +6,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import GlobalBackground from "@/components/ui/GlobalBackground";
+import SplashScreen from "@/components/ui/SplashScreen";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
             <GlobalBackground />
 
             <div className="relative z-10 flex flex-col min-h-screen">
+              <SplashScreen />
               <Navbar />
               <main className="flex-grow">{children}</main>
               <Footer />

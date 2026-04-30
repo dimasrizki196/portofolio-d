@@ -1,0 +1,33 @@
+
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background-color: transparent; width: 1024px; height: 1024px; max-width: 100%; height: auto;">
+        <defs>
+          <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur1" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur2" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur3" />
+            <feMerge>
+              <feMergeNode in="blur3" />
+              <feMergeNode in="blur2" />
+              <feMergeNode in="blur1" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <style>
+            .path1 { stroke-dasharray: 60; stroke-dashoffset: 60; animation: draw 2s ease-out forwards; opacity: 0; }
+            .path2 { stroke-dasharray: 150; stroke-dashoffset: 150; animation: draw 2s ease-out 0.3s forwards; opacity: 0; }
+            .path3 { stroke-dasharray: 40; stroke-dashoffset: 40; animation: draw 2s ease-out 0.6s forwards; opacity: 0; }
+            .dot { transform-origin: 65px 72px; transform: scale(0); animation: pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.2s forwards; opacity: 0; }
+            
+            @keyframes draw { to { stroke-dashoffset: 0; opacity: 1; } }
+            @keyframes pop { to { transform: scale(1); opacity: 1; } }
+          </style>
+        </defs>
+        
+        <g >
+          <path class="path1" d="M 30 20 L 30 80" stroke="#1d4ed8" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          <path class="path2" d="M 38 20 L 55 20 A 15 15 0 0 1 55 50 L 50 50 C 40 50 40 80 30 80" stroke="#1d4ed8" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          <path class="path3" d="M 50 55 L 60 65 L 50 75" stroke="#1d4ed8" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          <circle class="dot" cx="65" cy="72" r="2.5" fill="#1d4ed8" stroke="none" />
+        </g>
+      </svg>
+    

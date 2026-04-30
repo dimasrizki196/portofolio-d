@@ -1,9 +1,10 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { Briefcase, GraduationCap, Users, Award } from "lucide-react";
+import { Briefcase, GraduationCap, Users, Award, X, Eye } from "lucide-react";
 
-// --- DATA 1: PENGALAMAN PROFESIONAL (Kerja & Magang) ---
+// --- DATA 1: PENGALAMAN PROFESIONAL ---
 const workExperience = [
   {
     id: 1,
@@ -14,8 +15,8 @@ const workExperience = [
     org: "Independent Projects",
     date: "Aug 2025 - Present",
     desc: {
-      EN: "Managed the full software development lifecycle for various clients, translating complex business needs into scalable digital solutions. Projects include:",
-      ID: "Mengelola siklus pengembangan perangkat lunak secara penuh untuk berbagai klien, menerjemahkan kebutuhan bisnis menjadi solusi digital yang skalabel. Proyek meliputi:",
+      EN: "Managed the full software development lifecycle for various clients, translating complex business needs into scalable digital solutions.",
+      ID: "Mengelola siklus pengembangan perangkat lunak secara penuh untuk berbagai klien, menerjemahkan kebutuhan bisnis menjadi solusi digital yang skalabel.",
     },
     bullets: [
       "AnglePhysio: Health-tech web platform for posture analysis (ReactJS, Supabase).",
@@ -27,7 +28,7 @@ const workExperience = [
       "Lab Fisioterapi UMS: Sistem manajemen laboratorium digital (Laravel, MySQL).",
       "Profile Sekolah: Website branding responsif dengan komponen UI modern.",
     ],
-    icon: <Briefcase size={20} />,
+    icon: <Briefcase size={18} />,
   },
   {
     id: 2,
@@ -46,20 +47,20 @@ const workExperience = [
       "Mentransformasi sistem administrasi persuratan berbasis GUI lawas menjadi aplikasi web modern.",
       "Mengoptimalkan kueri database dan mengimplementasikan perutean data yang aman menggunakan framework Laravel.",
     ],
-    icon: <Briefcase size={20} />,
+    icon: <Briefcase size={18} />,
   },
 ];
 
 // --- DATA 2: PENDIDIKAN & RISET ---
 const educationExperience = [
   {
-    id: 1,
+    id: 3,
     role: { EN: "Bachelor of Informatics", ID: "S1 Teknik Informatika" },
     org: "Universitas Muhammadiyah Surakarta",
     date: "2022 - 2026",
     desc: {
-      EN: "Focused on software engineering, web development, and system architecture. Conducted significant academic research:",
-      ID: "Berfokus pada rekayasa perangkat lunak, pengembangan web, dan arsitektur sistem. Melakukan riset akademik signifikan:",
+      EN: "Focused on software engineering, web development, and system architecture.",
+      ID: "Berfokus pada rekayasa perangkat lunak, pengembangan web, dan arsitektur sistem.",
     },
     bullets: [
       "Thesis Project: Designed and built a comprehensive web-based tuition fee (SPP) and digital communication system for TK Bina Pratama.",
@@ -67,10 +68,10 @@ const educationExperience = [
     bullets_ID: [
       "Proyek Skripsi: Merancang dan membangun sistem komunikasi digital dan manajemen SPP berbasis web yang komprehensif untuk TK Bina Pratama.",
     ],
-    icon: <GraduationCap size={20} />,
+    icon: <GraduationCap size={18} />,
   },
   {
-    id: 2,
+    id: 4,
     role: { EN: "Vocational High School", ID: "SMK Teknik Pemesinan" },
     org: "SMK Negeri 2 Surakarta",
     date: "2019 - 2022",
@@ -78,16 +79,14 @@ const educationExperience = [
       EN: "Built a strong foundation in mechanical logic, precision, and systematic problem-solving.",
       ID: "Membangun fondasi yang kuat dalam logika presisi dan pemecahan masalah sistematis.",
     },
-    bullets: [],
-    bullets_ID: [],
-    icon: <GraduationCap size={20} />,
+    icon: <GraduationCap size={18} />,
   },
 ];
 
 // --- DATA 3: ORGANISASI & KEPEMIMPINAN ---
 const orgExperience = [
   {
-    id: 1,
+    id: 5,
     role: {
       EN: "Mentor & Class Facilitator (PMK)",
       ID: "Pendamping Materi Kelas (PMK)",
@@ -95,185 +94,222 @@ const orgExperience = [
     org: "Fakultaria UMS",
     date: "2024 & 2025",
     desc: {
-      EN: "Served as a mentor and guide for new university students during the official orientation program.",
-      ID: "Bertugas sebagai mentor dan pembimbing bagi peserta/mahasiswa baru selama program orientasi resmi kampus.",
+      EN: "Served as a mentor for new university students during orientation.",
+      ID: "Bertugas sebagai mentor bagi mahasiswa baru selama program orientasi kampus.",
     },
     bullets: [
       "Facilitated material comprehension and guided students in campus transition.",
-      "Ensured a supportive and engaging learning environment for incoming freshmen.",
     ],
     bullets_ID: [
-      "Memfasilitasi pemahaman materi dan membimbing mahasiswa baru dalam masa transisi ke dunia kampus.",
-      "Bertanggung jawab memastikan lingkungan belajar yang suportif dan interaktif selama orientasi berlangsung.",
+      "Memfasilitasi pemahaman materi dan membimbing mahasiswa baru dalam masa transisi.",
     ],
-    icon: <Users size={20} />,
+    icon: <Users size={18} />,
   },
   {
-    id: 2,
+    id: 6,
     role: { EN: "Organization", ID: "Organisasi" },
-    org: "Ikatan Mahasiswa Muhammadiyah (IMM)",
+    org: "IMM & UKM FINIC",
     date: "2023 - 2025",
     desc: {
-      EN: "Actively involved in organizational development, leadership training, and media communication.",
-      ID: "Terlibat aktif dalam pengembangan organisasi, pelatihan kepemimpinan, dan komunikasi media.",
+      EN: "Active in media communication and visual storytelling.",
+      ID: "Aktif dalam komunikasi media dan penceritaan visual.",
     },
-    bullets: [
-      "Managed organizational media communication and digital presence.",
-      "Participated in leadership programs and team-building activities.",
-    ],
-    bullets_ID: [
-      "Mengelola komunikasi media organisasi dan kehadiran digital secara konsisten.",
-      "Berpartisipasi dalam program kepemimpinan dan aktivitas kolaborasi tim.",
-    ],
-    icon: <Users size={20} />,
-  },
-  {
-    id: 3,
-    role: {
-      EN: "Student Activity Unit (UKM)",
-      ID: "UKM (Unit Kegiatan Mahasiswa)",
-    },
-    org: "UKM FINIC (Fotografi Komunikasi & Informatika)",
-    date: "2023 - 2025",
-    desc: {
-      EN: "Explored visual storytelling through photography hunting sessions and collaborative art exhibitions.",
-      ID: "Mengeksplorasi penceritaan visual melalui sesi hunting fotografi dan pameran seni kolaboratif.",
-    },
-    bullets: [
-      "Participated in regular photography hunting sessions to develop technical and creative skills.",
-      "Contributed to the curation and execution of photography exhibitions to showcase student works.",
-    ],
-    bullets_ID: [
-      "Berpartisipasi dalam sesi hunting fotografi rutin untuk mengasah keterampilan teknis dan kreatif.",
-      "Berkontribusi dalam kurasi dan pelaksanaan pameran fotografi untuk menampilkan karya mahasiswa.",
-    ],
-    icon: <Users size={20} />,
+    icon: <Users size={18} />,
   },
 ];
 
+// --- HOOK UNTUK SCROLL REVEAL ---
+function useScrollReveal(threshold = 0.1) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true);
+      },
+      { threshold },
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [threshold]);
+  return { ref, isVisible };
+}
+
 export default function ExperiencePage() {
   const { lang } = useLanguage();
+  const [isPageReady, setIsPageReady] = useState(false);
+  const [showCV, setShowCV] = useState(false);
 
-  // Komponen Helper untuk merender list timeline per kategori
-  const TimelineSection = ({ title, data, icon: TitleIcon }: any) => (
-    <div className="mb-20">
-      <h2 className="text-2xl font-black text-text-main dark:text-text-darkMain mb-10 flex items-center gap-3 border-b border-light-border dark:border-navy-700 pb-4">
-        <TitleIcon className="text-accent" size={28} />
-        {title}
-      </h2>
-      <div className="space-y-12 border-l border-light-border dark:border-navy-700 pl-8 ml-3">
-        {data.map((item: any) => (
-          <div key={item.id} className="relative group">
-            {/* Dot */}
-            <div className="absolute -left-[43px] top-0 p-2 bg-light-surface dark:bg-navy-800 text-accent rounded-full border border-light-border dark:border-navy-700 group-hover:bg-accent group-hover:text-white transition-colors duration-300">
-              {item.icon}
+  useEffect(() => {
+    const timer = setTimeout(() => setIsPageReady(true), 1600);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Mematikan scroll body saat modal terbuka
+  useEffect(() => {
+    if (showCV) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [showCV]);
+
+  const TimelineSection = ({ title, data, icon: TitleIcon }: any) => {
+    const { ref: sectionRef, isVisible } = useScrollReveal(0.05);
+    return (
+      <div ref={sectionRef} className="mb-20">
+        <h2
+          className={`text-xl sm:text-2xl font-black text-text-main dark:text-text-darkMain mb-10 flex items-center gap-3 border-b border-light-border dark:border-navy-700 pb-4 transition-all duration-700 ${isVisible && isPageReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+        >
+          <TitleIcon className="text-accent" size={24} />
+          {title}
+        </h2>
+        <div className="relative space-y-10 sm:space-y-12 border-l border-light-border dark:border-navy-700 ml-4 sm:ml-5 pl-8 sm:pl-10">
+          {data.map((item: any, idx: number) => (
+            <div
+              key={item.id}
+              className={`relative transition-all duration-700 ease-out ${isVisible && isPageReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+              style={{ transitionDelay: `${idx * 150}ms` }}
+            >
+              <div className="absolute -left-[49px] sm:-left-[58px] top-1 p-2 bg-light-bg dark:bg-navy-900 text-accent rounded-full border border-light-border dark:border-navy-700 z-10 shrink-0">
+                {item.icon}
+              </div>
+              <div className="bg-light-surface/40 dark:bg-navy-800/40 p-5 sm:p-8 rounded-2xl border border-light-border dark:border-navy-700 hover:border-accent/40 transition-colors duration-300 shadow-sm">
+                <span className="inline-block px-3 py-1 mb-3 bg-accent/10 text-accent rounded-md text-[10px] font-black uppercase tracking-widest">
+                  {item.date}
+                </span>
+                <h3 className="text-lg sm:text-xl font-bold text-text-main dark:text-text-darkMain mb-1">
+                  {lang === "EN" ? item.role.EN : item.role.ID}
+                </h3>
+                <h4 className="text-xs sm:text-sm font-bold text-text-muted dark:text-text-darkMuted mb-4">
+                  {item.org}
+                </h4>
+                <p className="text-xs sm:text-sm text-text-muted dark:text-text-darkMuted leading-relaxed">
+                  {lang === "EN" ? item.desc.EN : item.desc.ID}
+                </p>
+                {item.bullets && item.bullets.length > 0 && (
+                  <ul className="mt-4 space-y-2">
+                    {(lang === "ID" ? item.bullets_ID : item.bullets).map(
+                      (bullet: string, bIdx: number) => (
+                        <li
+                          key={bIdx}
+                          className="text-xs sm:text-sm text-text-muted dark:text-text-darkMuted flex items-start gap-2"
+                        >
+                          <span className="text-accent mt-1 shrink-0">•</span>
+                          <span>{bullet}</span>
+                        </li>
+                      ),
+                    )}
+                  </ul>
+                )}
+              </div>
             </div>
-
-            {/* Content Box */}
-            <div className="bg-light-surface/40 dark:bg-navy-800/40 p-6 md:p-8 rounded-2xl border border-light-border dark:border-navy-700 hover:border-accent/40 transition-colors duration-300 shadow-sm">
-              <span className="inline-block px-3 py-1 mb-3 bg-accent/10 text-accent rounded-md text-[10px] font-black uppercase tracking-widest">
-                {item.date}
-              </span>
-              <h3 className="text-xl font-bold text-text-main dark:text-text-darkMain mb-1">
-                {lang === "EN" ? item.role.EN : item.role.ID}
-              </h3>
-              <h4 className="text-sm font-bold text-text-muted dark:text-text-darkMuted mb-4">
-                {item.org}
-              </h4>
-              <p className="text-sm text-text-muted dark:text-text-darkMuted leading-relaxed">
-                {lang === "EN" ? item.desc.EN : item.desc.ID}
-              </p>
-
-              {/* Render Bullets jika ada */}
-              {item.bullets && item.bullets.length > 0 && (
-                <ul className="mt-4 space-y-2">
-                  {(lang === "ID" && item.bullets_ID
-                    ? item.bullets_ID
-                    : item.bullets
-                  ).map((bullet: string, idx: number) => (
-                    <li
-                      key={idx}
-                      className="text-sm text-text-muted dark:text-text-darkMuted flex items-start gap-2"
-                    >
-                      <span className="text-accent mt-1">•</span>
-                      <span>{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
-    <main className="min-h-screen pt-32 pb-20 bg-light-bg dark:bg-navy-900 px-6 transition-colors duration-300">
+    <main className="min-h-screen pt-28 sm:pt-32 pb-16 sm:pb-20 bg-light-bg dark:bg-navy-900 px-4 sm:px-6 transition-colors duration-300 overflow-hidden">
       <div className="max-w-4xl mx-auto">
         {/* HEADER */}
-        <header className="mb-20">
-          <h1 className="text-4xl md:text-6xl font-black text-text-main dark:text-text-darkMain tracking-tighter mb-6">
+        <header className="mb-16 sm:mb-20">
+          <h1
+            className={`text-4xl sm:text-6xl font-black text-text-main dark:text-text-darkMain tracking-tighter mb-6 transition-all duration-1000 ${isPageReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+          >
             {lang === "EN" ? "My Experience." : "Pengalaman Saya."}
           </h1>
-          <p className="text-lg text-text-muted dark:text-text-darkMuted leading-relaxed max-w-2xl">
+          <p
+            className={`text-base sm:text-lg text-text-muted dark:text-text-darkMuted leading-relaxed max-w-2xl transition-all duration-1000 delay-200 ${isPageReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          >
             {lang === "EN"
-              ? "A detailed overview of my professional roles, academic background, and organizational leadership."
-              : "Gambaran rinci tentang peran profesional, latar belakang akademik, dan kepemimpinan organisasi saya."}
+              ? "A detailed overview of my professional roles."
+              : "Gambaran rinci tentang peran profesional saya."}
           </p>
         </header>
 
-        {/* SECTION 1: PROFESSIONAL */}
+        {/* TIMELINE SECTIONS */}
         <TimelineSection
-          title={lang === "EN" ? "Professional Experience" : "Pengalaman Kerja"}
+          title={lang === "EN" ? "Professional" : "Profesional"}
           data={workExperience}
           icon={Briefcase}
         />
-
-        {/* SECTION 2: EDUCATION */}
         <TimelineSection
-          title={lang === "EN" ? "Education & Academic" : "Pendidikan Akademik"}
+          title={lang === "EN" ? "Academic" : "Akademik"}
           data={educationExperience}
           icon={GraduationCap}
         />
-
-        {/* SECTION 3: ORGANIZATION */}
         <TimelineSection
-          title={
-            lang === "EN"
-              ? "Leadership & Campus Involvement"
-              : "Organisasi & Kegiatan Kampus"
-          }
+          title={lang === "EN" ? "Organization" : "Organisasi"}
           data={orgExperience}
           icon={Users}
         />
 
-        {/* CTA SECTION: DOWNLOAD CV */}
-        <div className="mt-20 p-10 bg-gradient-to-br from-light-surface to-light-bg dark:from-navy-800 dark:to-navy-900 rounded-[2rem] border border-light-border dark:border-navy-700 text-center shadow-lg transition-all duration-300 hover:shadow-xl">
+        {/* CTA: VIEW CV */}
+        <div
+          className={`mt-20 p-8 sm:p-12 bg-white dark:bg-navy-800 rounded-[2.5rem] border border-light-border dark:border-navy-700 text-center shadow-xl transition-all duration-1000 delay-300 ${isPageReady ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+        >
           <Award className="mx-auto text-accent mb-6" size={40} />
-          <h3 className="text-2xl font-black text-text-main dark:text-text-darkMain mb-3 tracking-tighter">
+          <h3 className="text-xl sm:text-2xl font-black text-text-main dark:text-text-darkMain mb-4 tracking-tighter">
             {lang === "EN"
-              ? "Ready for a deeper dive?"
-              : "Siap untuk melihat lebih detail?"}
+              ? "Looking for my full credentials?"
+              : "Ingin melihat kredensial lengkap?"}
           </h3>
-          <p className="text-sm text-text-muted dark:text-text-darkMuted mb-8 max-w-sm mx-auto leading-relaxed">
-            {lang === "EN"
-              ? "Download my full resume for a comprehensive view of my certifications, projects, and detailed skill sets in a printable format."
-              : "Unduh CV lengkap saya untuk melihat sertifikasi, detail proyek, dan daftar keterampilan mendalam dalam format yang siap cetak."}
-          </p>
-
-          <a
-            href="/cv-dimas.pdf"
-            download="CV_Dimas_Rizki_Prasetyo.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => setShowCV(true)}
+            className="inline-flex items-center gap-3 px-8 py-4 bg-accent text-white font-black text-[10px] tracking-widest uppercase rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg shadow-accent/20"
           >
-            <button className="px-8 py-4 bg-accent text-white font-black text-xs tracking-widest uppercase rounded-full hover:bg-accent/90 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg shadow-accent/20">
-              {lang === "EN" ? "Download Full Resume" : "Unduh CV Lengkap"}
-            </button>
-          </a>
+            <Eye size={16} />
+            {lang === "EN" ? "Preview Resume" : "Pratinjau CV"}
+          </button>
         </div>
       </div>
+
+      {/* === MODAL CV PREVIEW === */}
+      {showCV && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 sm:p-6">
+          <div
+            className="absolute inset-0 bg-navy-900/60 backdrop-blur-md animate-in fade-in duration-300"
+            onClick={() => setShowCV(false)}
+          />
+
+          <div className="relative w-full max-w-5xl h-[85vh] bg-white dark:bg-navy-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col animate-in zoom-in-95 duration-300">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-light-border dark:border-navy-700 bg-white dark:bg-navy-800">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-accent/10 rounded-lg hidden sm:block">
+                  <Briefcase size={20} className="text-accent" />
+                </div>
+                <div>
+                  <h2 className="text-sm sm:text-base font-black text-text-main dark:text-text-darkMain uppercase tracking-tight leading-none mb-1">
+                    Curriculum Vitae
+                  </h2>
+                  <p className="text-[9px] text-text-muted uppercase font-bold tracking-widest">
+                    Dimas Rizki P. — Read Only
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowCV(false)}
+                className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-full transition-all duration-300"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Viewer Body */}
+            <div className="flex-grow bg-gray-100 dark:bg-navy-900 relative">
+              <iframe
+                src="/cv-dimas.pdf#toolbar=0&navpanes=0&scrollbar=0"
+                className="w-full h-full border-none"
+                title="CV Preview"
+              />
+              <div className="absolute inset-0 pointer-events-none" />
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
