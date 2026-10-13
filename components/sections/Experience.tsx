@@ -25,7 +25,7 @@ function useScrollReveal() {
           setIsVisible(true);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (ref.current) observer.observe(ref.current);
@@ -35,29 +35,32 @@ function useScrollReveal() {
   return { ref, isVisible };
 }
 
-// --- DATA: EXPERIENCE (KOLOM KIRI - 3 Proyek) ---
+// --- DATA: EXPERIENCE (KOLOM KIRI - 3 Item) ---
 const experienceDataLeft = [
   {
     id: 1,
-    year: "Apr 2026 - Present",
-    title: { EN: "Freelance Web Developer", ID: "Pengembang Web Lepas" },
-    subtitle: "Profile Sekolah",
-    desc: {
-      EN: "Developing a responsive school profile website featuring interactive UI components and modern backend integration.",
-      ID: "Mengembangkan website profil sekolah responsif dengan komponen UI interaktif dan integrasi backend modern.",
+    year: "Aug 2026 - Present",
+    title: {
+      EN: "Fullstack Software Engineer Trainee",
+      ID: "Trainee Software Engineer Fullstack",
     },
-    icon: Layout,
+    subtitle: "Enigma Camp",
+    desc: {
+      EN: "Intensive bootcamp focusing on Java Spring Boot, modern web development, and software engineering best practices.",
+      ID: "Bootcamp intensif yang berfokus pada Java Spring Boot, pengembangan web modern, dan praktik terbaik rekayasa perangkat lunak.",
+    },
+    icon: Code,
   },
   {
     id: 2,
-    year: "Nov 2025 - Feb 2026",
-    title: { EN: "Informatics Thesis Project", ID: "Proyek Skripsi Informatika" },
-    subtitle: "Sistem SPP TK Bina Pratama",
+    year: "Apr - Juny 2026",
+    title: { EN: "Freelance Web Developer", ID: "Pengembang Web Lepas" },
+    subtitle: "MIN 6 Boyolali & Internal Projects",
     desc: {
-      EN: "Built a comprehensive digital communication and tuition fee management system for kindergarten.",
-      ID: "Membangun sistem manajemen pembayaran SPP dan komunikasi digital komprehensif untuk TK.",
+      EN: "Developing various platforms including MIN 6 Boyolali profile, Kopi Pusat management, POS, Kirei Shop BI, and Web Questionnaires.",
+      ID: "Mengembangkan berbagai platform web termasuk profil MIN 6 Boyolali, manajemen Kopi Pusat, POS, BI Kirei Shop, dan Web Kuesioner.",
     },
-    icon: BookOpen,
+    icon: Layout,
   },
   {
     id: 3,
@@ -72,7 +75,7 @@ const experienceDataLeft = [
   },
 ];
 
-// --- DATA: EXPERIENCE (KOLOM KANAN - 2 Proyek) ---
+// --- DATA: EXPERIENCE (KOLOM KANAN - 3 Item) ---
 const experienceDataRight = [
   {
     id: 4,
@@ -87,7 +90,7 @@ const experienceDataRight = [
   },
   {
     id: 5,
-    year: "Aug 2025 - Present",
+    year: "Sep 2025 - Present",
     title: { EN: "Software Engineer", ID: "Software Engineer" },
     subtitle: "AnglePhysio",
     desc: {
@@ -95,6 +98,20 @@ const experienceDataRight = [
       ID: "Mengembangkan platform web health-tech yang dirancang untuk analisis postur dan asesmen fisioterapi komprehensif.",
     },
     icon: Code,
+  },
+  {
+    id: 6,
+    year: "Sep 2025 - Feb 2026",
+    title: {
+      EN: "Informatics Thesis Project",
+      ID: "Proyek Skripsi Informatika",
+    },
+    subtitle: "Sistem SPP TK Bina Pratama",
+    desc: {
+      EN: "Built a comprehensive digital communication and tuition fee management system for kindergarten.",
+      ID: "Membangun sistem manajemen pembayaran SPP dan komunikasi digital komprehensif untuk TK.",
+    },
+    icon: BookOpen,
   },
 ];
 
@@ -106,8 +123,8 @@ const educationData = [
     title: { EN: "Bachelor of Informatics", ID: "S1 Teknik Informatika" },
     subtitle: "Universitas Muhammadiyah Surakarta",
     desc: {
-      EN: "Focused on software engineering, web development, and system architecture.",
-      ID: "Fokus pada rekayasa perangkat lunak, pengembangan web, dan arsitektur sistem.",
+      EN: "Focused on software engineering, web development, and system architecture. Graduated with a GPA of 3.68.",
+      ID: "Fokus pada rekayasa perangkat lunak, pengembangan web, dan arsitektur sistem. Lulus dengan IPK 3.68.",
     },
     icon: GraduationCap,
   },
@@ -139,7 +156,7 @@ const organizationData = [
   },
   {
     id: 2,
-    year: "2023 - 2025",
+    year: "2023 - 2024",
     title: { EN: "Unit Kegiatan Mahasiswa", ID: "Unit Kegiatan Mahasiswa" },
     subtitle: "Fotografi Komunikasi dan Informatika (FINIC)",
     desc: {
@@ -151,7 +168,17 @@ const organizationData = [
 ];
 
 // --- KOMPONEN HELPER TIMELINE ---
-const TimelineList = ({ data, startDelay = 0, isSectionVisible, lang }: { data: any[]; startDelay?: number; isSectionVisible: boolean; lang: "EN" | "ID" }) => {
+const TimelineList = ({
+  data,
+  startDelay = 0,
+  isSectionVisible,
+  lang,
+}: {
+  data: any[];
+  startDelay?: number;
+  isSectionVisible: boolean;
+  lang: "EN" | "ID";
+}) => {
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
@@ -177,7 +204,9 @@ const TimelineList = ({ data, startDelay = 0, isSectionVisible, lang }: { data: 
             <div
               key={item.id}
               className={`relative pl-14 sm:pl-16 md:pl-24 group transition-all duration-700 ease-out ${
-                animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+                animate
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-12"
               }`}
               style={{ transitionDelay: `${baseDelay}ms` }}
             >
@@ -188,33 +217,41 @@ const TimelineList = ({ data, startDelay = 0, isSectionVisible, lang }: { data: 
 
               {/* Kartu Konten */}
               <div className="bg-light-surface/40 dark:bg-navy-800/40 backdrop-blur-md border border-light-border dark:border-navy-700 p-5 sm:p-6 md:p-8 rounded-2xl shadow-lg hover:border-accent/40 transition-colors duration-300 overflow-hidden">
-                <div 
+                <div
                   className={`inline-block px-3 py-1 mb-3 rounded-md bg-accent/10 text-accent text-[10px] font-bold tracking-wider uppercase transition-all duration-700 ease-out ${
-                    animate ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
+                    animate
+                      ? "opacity-100 translate-x-0"
+                      : "opacity-0 -translate-x-8"
                   }`}
                   style={{ transitionDelay: `${baseDelay + 150}ms` }}
                 >
                   {item.year}
                 </div>
-                <h4 
+                <h4
                   className={`text-lg sm:text-xl font-bold text-text-main dark:text-text-darkMain mb-1 transition-all duration-700 ease-out ${
-                    animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                    animate
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-6"
                   }`}
                   style={{ transitionDelay: `${baseDelay + 250}ms` }}
                 >
                   {item.title[lang]}
                 </h4>
-                <p 
+                <p
                   className={`text-xs sm:text-sm font-bold text-text-muted dark:text-text-darkMuted mb-3 sm:mb-4 transition-all duration-700 ease-out ${
-                    animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                    animate
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-6"
                   }`}
                   style={{ transitionDelay: `${baseDelay + 350}ms` }}
                 >
                   {item.subtitle}
                 </p>
-                <p 
+                <p
                   className={`text-xs sm:text-sm text-text-muted dark:text-text-darkMuted leading-relaxed transition-all duration-700 ease-out ${
-                    animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                    animate
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-6"
                   }`}
                   style={{ transitionDelay: `${baseDelay + 450}ms` }}
                 >
@@ -251,11 +288,10 @@ export default function Experience() {
   return (
     <section
       id="experience"
-      ref={sectionRef} 
+      ref={sectionRef}
       className="w-full py-16 sm:py-24 relative z-10 min-h-[800px] overflow-hidden"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        
         {/* Header Animasi */}
         <div
           className={`mb-10 sm:mb-12 text-center transition-all duration-1000 ease-out ${
@@ -307,18 +343,28 @@ export default function Experience() {
             <>
               {/* === TAMPILAN MOBILE: Semua data digabung jadi 1 List agar garis nyambung === */}
               <div className="block lg:hidden">
-                <TimelineList 
-                  data={[...experienceDataLeft, ...experienceDataRight]} 
-                  startDelay={100} 
-                  isSectionVisible={isVisible} 
-                  lang={lang} 
+                <TimelineList
+                  data={[...experienceDataLeft, ...experienceDataRight]}
+                  startDelay={100}
+                  isSectionVisible={isVisible}
+                  lang={lang}
                 />
               </div>
 
               {/* === TAMPILAN DESKTOP: Dipisah jadi 2 Kolom === */}
               <div className="hidden lg:grid grid-cols-2 gap-16">
-                <TimelineList data={experienceDataLeft} startDelay={100} isSectionVisible={isVisible} lang={lang} />
-                <TimelineList data={experienceDataRight} startDelay={250} isSectionVisible={isVisible} lang={lang} />
+                <TimelineList
+                  data={experienceDataLeft}
+                  startDelay={100}
+                  isSectionVisible={isVisible}
+                  lang={lang}
+                />
+                <TimelineList
+                  data={experienceDataRight}
+                  startDelay={250}
+                  isSectionVisible={isVisible}
+                  lang={lang}
+                />
               </div>
             </>
           )}
@@ -332,7 +378,12 @@ export default function Experience() {
                   <GraduationCap className="text-accent w-5 h-5 sm:w-6 sm:h-6" />
                   {lang === "EN" ? "Education" : "Pendidikan Akademik"}
                 </h4>
-                <TimelineList data={educationData} startDelay={100} isSectionVisible={isVisible} lang={lang} />
+                <TimelineList
+                  data={educationData}
+                  startDelay={100}
+                  isSectionVisible={isVisible}
+                  lang={lang}
+                />
               </div>
 
               {/* Kolom Kanan: Organization */}
@@ -341,7 +392,12 @@ export default function Experience() {
                   <Users className="text-accent w-5 h-5 sm:w-6 sm:h-6" />
                   {lang === "EN" ? "Organization" : "Organisasi & UKM"}
                 </h4>
-                <TimelineList data={organizationData} startDelay={250} isSectionVisible={isVisible} lang={lang} />
+                <TimelineList
+                  data={organizationData}
+                  startDelay={250}
+                  isSectionVisible={isVisible}
+                  lang={lang}
+                />
               </div>
             </div>
           )}

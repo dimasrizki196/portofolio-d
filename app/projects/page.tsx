@@ -55,13 +55,61 @@ const projectsData = [
     links: { github: "#", live: "" },
   },
   {
-    title: "Profile Sekolah",
+    title: "MIN 6 Boyolali Profile",
     category: "Web Branding",
-    isPublic: false,
+    isPublic: true,
     tech: ["Laravel", "ReactJS", "Tailwind"],
     desc: {
       EN: "Responsive school profile website featuring interactive UI components and modern backend integration.",
       ID: "Website profil sekolah responsif dengan komponen UI interaktif dan integrasi backend modern.",
+    },
+    image: "", // Anda bisa menambahkan path gambar nantinya jika ada
+    links: { github: "#", live: "https://min6boyolali.com/" },
+  },
+  {
+    title: "Manage Kopi Pusat",
+    category: "Management System",
+    isPublic: false,
+    tech: ["Laravel", "MySQL", "Tailwind"],
+    desc: {
+      EN: "Internal management system built to streamline and centralize coffee shop operations.",
+      ID: "Sistem manajemen internal yang dibangun untuk mengelola operasional pusat kedai kopi secara terpusat.",
+    },
+    image: "",
+    links: { github: "#", live: "" },
+  },
+  {
+    title: "Kasir Kopi Pusat",
+    category: "Point of Sale",
+    isPublic: false,
+    tech: ["ReactJS", "Tailwind", "PostgreSQL"],
+    desc: {
+      EN: "A fast and responsive Point of Sale (POS) application developed for daily cashier transactions.",
+      ID: "Aplikasi Point of Sale (POS) yang cepat dan responsif, dikembangkan untuk transaksi kasir harian.",
+    },
+    image: "",
+    links: { github: "#", live: "" },
+  },
+  {
+    title: "Business Intelligent Kirei Shop",
+    category: "Data Analytics",
+    isPublic: false,
+    tech: ["Laravel", "MySQL", "Data Viz"],
+    desc: {
+      EN: "Business intelligence dashboard to monitor, analyze, and visualize sales and performance data.",
+      ID: "Dashboard business intelligence untuk memantau, menganalisis, dan memvisualisasikan data penjualan serta performa bisnis.",
+    },
+    image: "",
+    links: { github: "#", live: "" },
+  },
+  {
+    title: "Web Kuesioner",
+    category: "Web Application",
+    isPublic: false,
+    tech: ["ReactJS", "Supabase", "Tailwind"],
+    desc: {
+      EN: "A dynamic web platform for creating, distributing, and managing online questionnaires and surveys.",
+      ID: "Platform web dinamis untuk membuat, mendistribusikan, dan mengelola kuesioner serta survei online.",
     },
     image: "",
     links: { github: "#", live: "" },
@@ -152,7 +200,7 @@ export default function ProjectsPage() {
                   />
                 )}
 
-                {/* OVERLAY: Tetap ada hover di Desktop, tapi di Mobile kita sediakan tombol klik di bawah */}
+                {/* OVERLAY */}
                 <div
                   className={`absolute inset-0 z-20 transition-all duration-500 flex items-center justify-center bg-navy-900/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 hidden md:flex`}
                 >
@@ -180,7 +228,6 @@ export default function ProjectsPage() {
                     {project.category}
                   </span>
                   <div className="flex gap-3 items-center">
-                    {/* Tombol Eksternal muncul di MOBILE secara permanen jika publik */}
                     {project.isPublic && project.links.live && (
                       <a
                         href={project.links.live}
